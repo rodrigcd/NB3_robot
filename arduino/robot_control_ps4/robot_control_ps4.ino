@@ -1,4 +1,4 @@
-int base_speed = 200;
+int base_speed = 240;
 int led_state = 0;
 int led_pin=13;
 

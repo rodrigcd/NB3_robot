@@ -45,7 +45,7 @@ void stop_motor(char L_or_R) {
   if (L_or_R=='L') {
     digitalWrite(enable_left_bridge_pin, LOW);
   } else {
-    digitalWrite(enable_left_bridge_pin, LOW);
+    digitalWrite(enable_right_bridge_pin, LOW);
   }
 }
 

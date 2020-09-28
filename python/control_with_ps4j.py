@@ -23,7 +23,7 @@ def ArduinoCommunicator():
     return arduino
 
 
-class RobotPS4Controller(ArduinoLightController):
+class AnalogRobotPS4Controller(ArduinoLightController):
     # Light and robot movement
     def __init__(self, **kwargs):
         ArduinoLightController.__init__(self, **kwargs)
@@ -52,8 +52,35 @@ class RobotPS4Controller(ArduinoLightController):
         self.arduino.write(b'res')
         print("rest")
 
+class DigitalRobotPS4Controller(ArduinoLightController):
+    # Light and robot movement
+    def __init__(self, **kwargs):
+        ArduinoLightController.__init__(self, **kwargs)
+
+    def on_right_arrow_press(self):
+        self.arduino.write(b'rig')
+        print("turn right")
+
+    def on_left_arrow_press(self):
+        self.arduino.write(b'lef')
+        print("turn left")
+
+    def on_up_arrow_press(self):
+        self.arduino.write(b'for')
+        print("move forward")
+
+    def on_down_arrow_press(self):
+        self.arduino.write(b'bac')
+        print("move backwards")
+
+    def on_x_press(self):
+        self.arduino.write(b'res')
+        print("stop robot")
+
 if __name__ == "__main__":
-    controller = RobotPS4Controller(interface="/dev/input/js0", connecting_using_ds4drv=False)
+    #controller = AnalogArduinoLightController(interface="/dev/input/js0", connecting_using_ds4drv=False)
+    #controller = RobotPS4Controller(interface="/dev/input/js0", connecting_using_ds4drv=False)
+    controller = DigitalRobotPS4Controller(interface="/dev/input/js0", connecting_using_ds4drv=False)
     controller.listen()
 
 
