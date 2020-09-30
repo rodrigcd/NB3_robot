@@ -33,8 +33,8 @@ class FindMrMeeseeks(RaspiCam):
         print(hsv.shape, mr_color)
         normalization_val = 255/100
         h_norm = 255/360
-        low_color = np.array([int(110*h_norm), int(30*normalization_val), int(50*normalization_val)])
-        high_color = np.array([int(150*h_norm), int(100*normalization_val), int(100*normalization_val)])
+        low_color = np.array([int(135*h_norm), int(3*normalization_val), int(3*normalization_val)])
+        high_color = np.array([int(145*h_norm), int(100*normalization_val), int(100*normalization_val)])
         frame_mask = cv2.inRange(hsv, low_color, high_color)
         only_color_frame = cv2.bitwise_and(frame, frame, mask=frame_mask)
         return only_color_frame, frame_mask
@@ -42,7 +42,7 @@ class FindMrMeeseeks(RaspiCam):
     def show_video(self):
         while True:
             self.update_frame()
-            only_color_frame = self.detect_color_blobs(self.frame)
+            only_color_frame, frame_mask = self.detect_color_blobs(self.frame)
             cv2.imshow(self.window_name, self.frame)
             cv2.imshow("mask", only_color_frame)
             cv2.waitKey(1)
