@@ -29,10 +29,12 @@ class NStepSarsa(object):
         self.global_step = 0
 
     def choose_action(self, state, training=True):
-        if training or np.random.rand() < self.epsilon:
+        if not training or np.random.rand() > self.epsilon:
+            print("choosing")
             action = np.argmax(self.Q_values[state, :])
         else:
             action = np.random.choice(self.actions)
+        print(action, self.actions)
         return action
 
     def take_action(self, action, state, reward=0):
@@ -71,7 +73,7 @@ class NStepSarsa(object):
 
     def update_Q_values(self):
         G = 0
-        for i, reward in enumerate(self.current_operations["Rewards"]):
+        for i, reward in enumerate(self.current_operations["Rewards"][:-1]):
             state_i, action_i = self.current_operations["States"][i], self.current_operations["Actions"][i]
             state_i_1, action_i_1 = self.current_operations["States"][i], self.current_operations["Actions"][i]
             G += self.discount_factor**(self.n_steps-i)*reward + \

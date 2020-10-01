@@ -21,11 +21,11 @@ void loop() {
       stop_motor('L');
       move_motor(spd, 0, 'R');
     } else if (data_from_user == byte('ob')) {
-      stop_motor('L')
+      stop_motor('L');
       move_motor(spd, 1, 'R');
     } else if (data_from_user == byte('fo')) {
       move_motor(spd, 0, 'L');
-      stop_motor('R')
+      stop_motor('R');
     } else if (data_from_user == byte('ff')) {
       move_motor(spd, 0, 'L');
       move_motor(spd, 0, 'R');
@@ -34,7 +34,7 @@ void loop() {
       move_motor(spd, 1, 'R');
     } else if (data_from_user == byte('bo')) {
       move_motor(spd, 1, 'L');
-      stop_motor('R')
+      stop_motor('R');
     } else if (data_from_user == byte('bf')) {
       move_motor(spd, 1, 'L');
       move_motor(spd, 0, 'R');
