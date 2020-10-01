@@ -106,4 +106,4 @@ class FindMrMeeseeks(RaspiCam):
 
 if __name__ == "__main__":
     camera = FindMrMeeseeks()
-    camera.find()
+    camera.show_video()
