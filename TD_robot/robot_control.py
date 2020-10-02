@@ -42,6 +42,18 @@ class LearningRobot(ArduinoLightController):
         time.sleep(0.5)
         print("Wait for reward")
         self.arduino.write(b'led')
+        self.print_performance()
+
+    def print_performance(self, actions_in_epoch):
+        good_actions = ["ob", "fo", "fb"]
+        bad_actions = ["bo", "of", "bf"]
+        reward = 0
+        for a in actions_in_epoch:
+            if self.actions[actions_in_epoch] in good_actions:
+                reward += 1
+            elif self.actions[actions_in_epoch][a] in bad_actions:
+                reward -= 1
+        print("Performance:", reward)
 
     def on_up_arrow_press(self):
         print("Who is a good boy?")
