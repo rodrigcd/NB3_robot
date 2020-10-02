@@ -85,8 +85,9 @@ class LearningRobot(ArduinoLightController):
         for i, action in enumerate(self.actions):
             print("State:", action, "Best action:", self.actions[np.argmax(Q[i, :])])
 
+
 if __name__ == "__main__":
-    learning_function = NStepSarsa(n_states=9, n_actions=9, n_steps=10)
+    learning_function = NStepSarsa(n_states=9, n_actions=9, n_steps=10, epsilon_step=0.01, learning_rate=0.1)
     controller = LearningRobot(interface="/dev/input/js0", connecting_using_ds4drv=False, learning_class=learning_function)
     controller.listen()
 

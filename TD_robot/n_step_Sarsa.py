@@ -8,7 +8,7 @@ import pandas as pd
 class NStepSarsa(object):
 
     def __init__(self, n_states, n_actions, n_steps=20, step_time=0.5, start_epsilon=0.9, stop_epsilon=0.1,
-                 epsilon_step = 0.01, discount_factor=0.99, learning_rate=0.4):
+                 epsilon_step=0.005, discount_factor=0.99, learning_rate=0.1):
         self.n_states = n_states
         self.n_actions = n_actions
         self.n_steps = n_steps
@@ -74,10 +74,44 @@ class NStepSarsa(object):
         for i in range(self.n_steps-1):
             state_i, action_i = self.current_operations["States"][i], self.current_operations["Actions"][i]
             state_i_1, action_i_1 = self.current_operations["States"][i+1], self.current_operations["Actions"][i+1]
-            G += self.discount_factor**(self.n_steps-i)*self.current_operations["Rewards"][i+1]
-            G += self.Q_values[state_i_1, action_i_1]*self.discount_factor
+            G = self.current_operations["Rewards"][i+1] + self.Q_values[state_i_1, action_i_1]*self.discount_factor
             self.Q_values[state_i, action_i] = self.Q_values[state_i, action_i] + self.learning_rate*(G-self.Q_values[state_i, action_i])
         print("G", G)
 
     def get_Q_values(self):
         return self.Q_values
+
+    def print_current_best_actions(self, action_label):
+        Q = self.get_Q_values()
+        print(np.round(Q, 2))
+        for i, action in enumerate(self.actions):
+            print("State:", action_label[i], "Best action:", action_label[np.argmax(Q[i, :])])
+
+
+if __name__ == "__main__":
+    learning_function = NStepSarsa(n_states=9, n_actions=9, n_steps=10, epsilon_step=0.01, learning_rate=0.1)
+    n_epochs = 500
+
+    robot_actions = []  # 0: rest, 1: forward, 2: backward
+    action_str = "ofb"
+    for left_motor in range(3):
+        for right_motor in range(3):
+            robot_actions.append((action_str[left_motor] + action_str[right_motor]))
+
+    print(robot_actions)
+    good_actions = ["ob", "fo", "fb"]
+    bad_actions = ["bo", "of", "bf"]
+
+    for i in range(n_epochs):
+        operations = learning_function.run_epoch()
+        epoch_actions = operations["Actions"]
+        reward = 0
+        for a in epoch_actions:
+            if robot_actions[a] in good_actions:
+                reward += 1
+            elif robot_actions[a] in bad_actions:
+                reward -= 1
+        learning_function.receive_feedback(reward)
+        learning_function.update_Q_values()
+        learning_function.print_current_best_actions(robot_actions)
+        learning_function.save_Q_values()
