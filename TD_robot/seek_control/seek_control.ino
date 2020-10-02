@@ -6,43 +6,46 @@ void setup() {
   Serial.begin(9600);
   motor_control_pin_setup();
   pinMode(led_pin, OUTPUT);
+  digitalWrite(led_pin, LOW);
 }
 
 void loop() {
   if(Serial.available() > 0)
   {
     char data_from_user=Serial.read();
+    Serial.print(data_from_user);
     if (data_from_user == byte('led')){
       change_led();
-    } else if (data_from_user == byte('oo')) {
+    } else if (data_from_user == byte('s'){
+      digitalWrite(led_pin, LOW);
+    } else if (data_from_user == byte('0')) {
       stop_motor('L');
       stop_motor('R');
-    } else if (data_from_user == byte('of')) {
+    } else if (data_from_user == byte('1')) {
       stop_motor('L');
       move_motor(spd, 0, 'R');
-    } else if (data_from_user == byte('ob')) {
+    } else if (data_from_user == byte('2')) {
       stop_motor('L');
       move_motor(spd, 1, 'R');
-    } else if (data_from_user == byte('fo')) {
+    } else if (data_from_user == byte('3')) {
       move_motor(spd, 0, 'L');
       stop_motor('R');
-    } else if (data_from_user == byte('ff')) {
+    } else if (data_from_user == byte('4')) {
       move_motor(spd, 0, 'L');
       move_motor(spd, 0, 'R');
-    } else if (data_from_user == byte('fb')) {
+    } else if (data_from_user == byte('5')) {
       move_motor(spd, 0, 'L');
       move_motor(spd, 1, 'R');
-    } else if (data_from_user == byte('bo')) {
+    } else if (data_from_user == byte('6')) {
       move_motor(spd, 1, 'L');
       stop_motor('R');
-    } else if (data_from_user == byte('bf')) {
+    } else if (data_from_user == byte('7')) {
       move_motor(spd, 1, 'L');
       move_motor(spd, 0, 'R');
-    } else if (data_from_user == byte('bb')) {
+    } else if (data_from_user == byte('8')) {
       move_motor(spd, 1, 'L');
       move_motor(spd, 1, 'R');
     }
-    Serial.print(data_from_user);
   }
 
 }

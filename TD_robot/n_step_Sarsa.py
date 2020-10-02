@@ -30,11 +30,9 @@ class NStepSarsa(object):
 
     def choose_action(self, state, training=True):
         if not training or np.random.rand() > self.epsilon:
-            print("choosing")
             action = np.argmax(self.Q_values[state, :])
         else:
-            action = np.random.choice(self.actions)
-        print(action, self.actions)
+            action = np.random.choice(self.actions[1:])
         return action
 
     def take_action(self, action, state, reward=0):
@@ -42,15 +40,16 @@ class NStepSarsa(object):
         return new_state, reward
 
     def _update_epsilon(self):
-        self.epsilon -= self.epsilon - self.epsilon_step
+        self.epsilon -= self.epsilon_step
         if self.epsilon < self.stop_epsilon:
             self.epsilon = self.stop_epsilon
+        print(self.epsilon)
 
     def save_Q_values(self):
-        pickle.dump(self.Q_values, open("Q_values.pkl", "wb"), protocol=2)
+        pickle.dump([self.Q_values, self.epsilon], open("Q_values.pkl", "wb"), protocol=2)
 
     def load_Q_values(self):
-        self.Q_values = pd.read_pickle("Q_values.pkl")
+        self.Q_values, self.epsilon = pd.read_pickle("Q_values.pkl")
 
     def run_epoch(self):
         current_state = 0
@@ -65,7 +64,6 @@ class NStepSarsa(object):
             self.current_operations["Actions"].append(new_action)
             current_state = new_state
             current_action = new_action
-        self._update_epsilon()
         return self.current_operations
 
     def receive_feedback(self, reward):
@@ -73,12 +71,13 @@ class NStepSarsa(object):
 
     def update_Q_values(self):
         G = 0
-        for i, reward in enumerate(self.current_operations["Rewards"][:-1]):
+        for i in range(self.n_steps-1):
             state_i, action_i = self.current_operations["States"][i], self.current_operations["Actions"][i]
-            state_i_1, action_i_1 = self.current_operations["States"][i], self.current_operations["Actions"][i]
-            G += self.discount_factor**(self.n_steps-i)*reward + \
-                 self.Q_values[state_i_1, action_i_1]*self.discount_factor**(self.n_steps-(i+1))
+            state_i_1, action_i_1 = self.current_operations["States"][i+1], self.current_operations["Actions"][i+1]
+            G += self.discount_factor**(self.n_steps-i)*self.current_operations["Rewards"][i+1]
+            G += self.Q_values[state_i_1, action_i_1]*self.discount_factor
             self.Q_values[state_i, action_i] = self.Q_values[state_i, action_i] + self.learning_rate*(G-self.Q_values[state_i, action_i])
+        print("G", G)
 
     def get_Q_values(self):
         return self.Q_values
