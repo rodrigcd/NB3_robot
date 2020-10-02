@@ -16,7 +16,7 @@ void loop() {
     Serial.print(data_from_user);
     if (data_from_user == byte('led')){
       change_led();
-    } else if (data_from_user == byte('s'){
+    } else if (data_from_user == byte('s')) {
       digitalWrite(led_pin, LOW);
     } else if (data_from_user == byte('0')) {
       stop_motor('L');
